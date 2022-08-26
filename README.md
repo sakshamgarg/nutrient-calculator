@@ -1,6 +1,6 @@
-# nutrient_calculator
+# Nutrient Calculator
 
-A new Flutter project with flash screen
+A flutter project for  3D image reconstruction of a meal & its contents thereby giving users its nutritional value.
 
 ## Getting Started
 
