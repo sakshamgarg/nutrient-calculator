@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "1048762122658",
+    "project_id": "nutrient-calculator-46bb9",
+    "storage_bucket": "nutrient-calculator-46bb9.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1048762122658:android:1c1a69173a4d928f7432fb",
+        "android_client_info": {
+          "package_name": "com.example.nutrient_calculator"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1048762122658-bpmj981rtr10p294omovm59aqs3a6pbt.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyB7kv4xFY6Dl0spgku0b3GZU-YaBX4FRLc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1048762122658-bpmj981rtr10p294omovm59aqs3a6pbt.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

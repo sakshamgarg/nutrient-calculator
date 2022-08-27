@@ -1,10 +1,13 @@
 import 'dart:io';
 
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:nutrient_calculator/google_sign_in.dart';
+import 'package:nutrient_calculator/login.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart';
 import 'package:nutrient_calculator/autocomplete_api.dart';
@@ -71,16 +74,28 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context){
+
+    final currUser = FirebaseAuth.instance.currentUser!;
     return Scaffold(
       appBar: AppBar(
         title: Text(
-            'Hi ! Good Morning',
+          'Hi ' + currUser.displayName! +' !',
           style: TextStyle(
             color: Colors.black,
           ),
         ),
         centerTitle: true,
         backgroundColor: Colors.white,
+        actions: [
+          TextButton(
+              onPressed: () async {
+                await GoogleSignInProvider().logout();
+                Navigator.push(context,
+                  MaterialPageRoute(builder: (context) => LoginPage())
+                    );
+              },
+              child: Text('logout'))
+        ],
       ),
       body: Center(
         child: Column(

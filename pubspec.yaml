@@ -45,6 +45,16 @@ dependencies:
   flutter_svg : ^1.1.4
   google_fonts: ^3.0.1
 
+  # Google Sign In
+  firebase_auth: ^3.7.0
+  google_sign_in: ^5.4.1
+
+  # Google Icon
+  font_awesome_flutter: ^10.1.0
+
+  # State Management
+  provider: ^6.0.3
+
 dev_dependencies:
   flutter_test:
     sdk: flutter

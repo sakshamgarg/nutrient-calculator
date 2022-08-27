@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>1048762122658-in0d8hpqv4460d0bcja7dpj39d68htci.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.1048762122658-in0d8hpqv4460d0bcja7dpj39d68htci</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>1048762122658-q6p7vh57j70cr3f2am710ml1v0q2o07a.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyB5jei0JEsNlFH29yebMBMltdXzN9qoq2I</string>
+	<key>GCM_SENDER_ID</key>
+	<string>1048762122658</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.example.flashScreen</string>
+	<key>PROJECT_ID</key>
+	<string>nutrient-calculator-46bb9</string>
+	<key>STORAGE_BUCKET</key>
+	<string>nutrient-calculator-46bb9.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false/>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false/>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true/>
+	<key>IS_GCM_ENABLED</key>
+	<true/>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true/>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:1048762122658:ios:a02bb7c6b2db82c37432fb</string>
+</dict>
+</plist>
