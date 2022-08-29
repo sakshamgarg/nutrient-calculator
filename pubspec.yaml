@@ -52,6 +52,14 @@ dependencies:
   # Google Icon
   font_awesome_flutter: ^10.1.0
 
+  tflite_flutter: 0.9.0
+  tflite_flutter_helper: 0.2.1
+  image: ^3.2.0
+  logger: ^1.1.0
+  quiver: ^3.1.0
+  path: ^1.8.2
+  tuple:
+
   # State Management
   provider: ^6.0.3
 
@@ -87,6 +95,7 @@ flutter:
     - images/nyu.png
     - images/loginImage.png
     - images/demoImage.png
+    - assets/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

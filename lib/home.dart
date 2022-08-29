@@ -12,6 +12,12 @@ import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart';
 import 'package:nutrient_calculator/autocomplete_api.dart';
 
+import 'package:logger/logger.dart';
+import 'package:tflite_flutter_helper/tflite_flutter_helper.dart';
+import 'package:nutrient_calculator/classifier.dart';
+import 'package:nutrient_calculator/classifier_quant.dart';
+import 'package:image/image.dart' as img;
+
 import 'confirmClasses.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -34,8 +40,40 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
 
+  late Classifier _classifier;
+  var logger = Logger();
+
+
   File? image;
+
+  Image? _imageWidget;
+  img.Image? fox;
+  Category? category;
+
   final TextEditingController _typeAheadController = TextEditingController();
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _classifier = ClassifierQuant();
+  }
+
+  void _predict() async{
+    img.Image imageInput = img.decodeImage(this.image!.readAsBytesSync())!;
+    var pred = _classifier.predict(imageInput);
+    if (pred != null){
+      print("LABEL");
+      print(pred!.label);
+      print("CONFIDENCE");
+      print(pred!.score.toStringAsFixed(3));
+    } else {
+      print("NOTHING PREDICTED");
+    }
+    setState(() {
+      this.category = pred;
+    });
+  }
 
   Future pickImage() async{
     try {
@@ -45,7 +83,12 @@ class _MyHomePageState extends State<MyHomePage> {
 
       final imageTemp = File(image.path);
 
-      setState(()=> this.image = imageTemp);
+      setState(() {
+        this.image = imageTemp;
+        this._imageWidget = Image.file(this.image!);
+        _predict();
+      }
+      );
     } on PlatformException catch(e){
       print('Failed to laod image: $e');
     }
@@ -59,7 +102,12 @@ class _MyHomePageState extends State<MyHomePage> {
 
       // final imageTemp = File(image.path);
       final imagePermanent = await saveImagePermanently(image.path);
-      setState(()=> this.image = imagePermanent);
+      setState((){
+        this.image = imagePermanent;
+        this._imageWidget = Image.file(this.image!);
+        _predict();
+      }
+      );
     } on PlatformException catch(e){
       print('Failed to laod image: $e');
     }
@@ -261,7 +309,46 @@ class _MyHomePageState extends State<MyHomePage> {
                   Navigator.push(context,
                       MaterialPageRoute(builder: (context)=> ConfirmClasses(image)));
                 }
-            )
+            ),
+            Padding(
+              padding: const EdgeInsets.fromLTRB(10, 30, 10, 10),
+              child: Align(
+                alignment: Alignment.center,
+                child: Text(
+                  category != null ? 'Category: ${category!.label}' : '',
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.poppins(
+                    textStyle: const TextStyle(
+                      color: Color.fromRGBO(51, 51, 51, 1),
+                      fontSize: 14,
+                      height: 1,
+                      letterSpacing: 0,
+                      fontWeight: FontWeight.normal,
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(10),
+              child: Align(
+                alignment: Alignment.center,
+                child: Text(
+                  category != null ?
+                  'Confidence: ${category!.score.toStringAsFixed(3)}' : '',
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.poppins(
+                    textStyle: const TextStyle(
+                      color: Color.fromRGBO(51, 51, 51, 1),
+                      fontSize: 14,
+                      height: 1,
+                      letterSpacing: 0,
+                      fontWeight: FontWeight.normal,
+                    ),
+                  ),
+                ),
+              ),
+            ),
           ],
         ),
       ),
