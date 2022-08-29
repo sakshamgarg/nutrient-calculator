@@ -6,14 +6,17 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 import 'package:charts_flutter/flutter.dart' as charts;
+import 'package:tflite_flutter_helper/tflite_flutter_helper.dart';
 
 
 
 class DisplayCalories extends StatefulWidget {
   File? foodImage;
+  Category? category;
 
-  DisplayCalories(File? image, {super.key}){
+  DisplayCalories(File? image, Category? category, {super.key}){
     this.foodImage = image;
+    this.category = category;
   }
 
   // const DisplayCalories({Key? key}) : super(key: key);

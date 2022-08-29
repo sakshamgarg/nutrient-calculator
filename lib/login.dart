@@ -85,7 +85,7 @@ class _LoginPageState extends State<LoginPage> {
                                 minimumSize: Size(190, 45),
                               ),
                               onPressed: () async {
-                                await GoogleSignInProvider().googleLogin();
+                                // await GoogleSignInProvider().googleLogin();
                                 // final provider =
                                 // Provider.of<GoogleSignInProvider>(context, listen: false);
                                 // provider.googleLogin();

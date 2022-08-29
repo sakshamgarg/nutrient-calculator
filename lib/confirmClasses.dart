@@ -7,6 +7,7 @@ import 'package:nutrient_calculator/widget/text_dialog_widget.dart';
 import 'package:nutrient_calculator/model/food.dart';
 import 'package:nutrient_calculator/data/foodexample.dart';
 import 'package:nutrient_calculator/utils.dart';
+import 'package:tflite_flutter_helper/tflite_flutter_helper.dart';
 
 import 'displayCalories.dart';
 
@@ -14,9 +15,11 @@ class ConfirmClasses extends StatefulWidget {
   // const ConfirmClasses({Key? key}) : super(key: key);
 
   File? foodImage;
+  Category? category;
 
-  ConfirmClasses(File? image, {super.key}){
+  ConfirmClasses(File? image, Category? category, {super.key}){
     this.foodImage = image;
+    this.category = category;
   }
 
   @override
@@ -37,13 +40,17 @@ final List<Image> myImages = [
 class _ConfirmClassesState extends State<ConfirmClasses> {
 
   late List<Food> allFoods;
-  final columns = ['Food Class', 'Food Volume'];
+  final columns = ['Food Class', 'Confidence Level'];
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    this.allFoods = List.of(exampleFood);
+    final foodResult = <Food>[
+      Food(foodClass: widget.category!.label, volume: widget.category!.score),
+    ];
+    widget.category != null ?
+    this.allFoods = List.of(foodResult) : this.allFoods = List.of(exampleFood);
   }
 
   Future editFoodClass(Food editfood) async{
@@ -89,7 +96,7 @@ class _ConfirmClassesState extends State<ConfirmClasses> {
 
     return DataRow(
       cells: Utils.modelBuilder(cells, (index, cell) {
-        final showEditIcon = index == 0 || index == 1;
+        final showEditIcon = index == 0;
 
         return DataCell(
           Text('$cell'),
@@ -111,10 +118,10 @@ class _ConfirmClassesState extends State<ConfirmClasses> {
 
   Widget buildDataTable() => DataTable(
       decoration: BoxDecoration(
-        border: Border.all(
-          width: 1,
-          color: Colors.black
-        )
+        // border: Border.all(
+        //   width: 1,
+        //   color: Colors.black
+        // )
       ),
       columns: getColumns(columns),
       rows: getRows(allFoods)
@@ -152,6 +159,18 @@ class _ConfirmClassesState extends State<ConfirmClasses> {
               //   ),
               // ],
               // ),
+              widget.foodImage != null ?
+              Container(
+                width: MediaQuery.of(context).size.width,
+                height: MediaQuery.of(context).size.height/2,
+                decoration: BoxDecoration(
+                    // image: DecorationImage(
+                        // image: Image.file(widget.foodImage!),
+                        // fit: BoxFit.fitWidth
+                    // )
+                ),
+                child: Image.file(widget.foodImage!),
+              ) :
               Container(
                 width: MediaQuery.of(context).size.width,
                 height: MediaQuery.of(context).size.height/2,
@@ -176,13 +195,13 @@ class _ConfirmClassesState extends State<ConfirmClasses> {
               // ),
               Container(
                 width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height/2,
+                height: MediaQuery.of(context).size.height/4,
                 decoration: BoxDecoration(
                   borderRadius : BorderRadius.only(
                     topLeft: Radius.circular(30),
                     topRight: Radius.circular(30),
-                    bottomLeft: Radius.circular(0),
-                    bottomRight: Radius.circular(0),
+                    bottomLeft: Radius.circular(30),
+                    bottomRight: Radius.circular(30),
                   ),
                   // color : Color.fromRGBO(255, 255, 255, 1),
                   color: Colors.grey[300],
@@ -206,6 +225,29 @@ class _ConfirmClassesState extends State<ConfirmClasses> {
                       ],
                     ),
 
+                ),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: ElevatedButton(
+                    child: const Text(
+                      'Confirm Class',
+                      style: TextStyle(
+                          color: Colors.black,
+                          fontWeight: FontWeight.bold
+                      ),
+                    ),
+                    style: ElevatedButton.styleFrom(
+                      shape: StadiumBorder(),
+                      primary: Colors.grey[300],
+                      // minimumSize: Size(190, 45),
+                    ),
+                    onPressed: () {
+                      Navigator.push(context,
+                          MaterialPageRoute(
+                              builder: (context)=>
+                                  DisplayCalories(widget.foodImage, widget.category)));
+                    }
                 ),
               ),
 

@@ -307,7 +307,8 @@ class _MyHomePageState extends State<MyHomePage> {
                 ),
                 onPressed: () {
                   Navigator.push(context,
-                      MaterialPageRoute(builder: (context)=> ConfirmClasses(image)));
+                      MaterialPageRoute(
+                          builder: (context)=> ConfirmClasses(image, category)));
                 }
             ),
             Padding(
