@@ -1,19 +1,19 @@
 import 'dart:ffi';
 
-class Food {
+class FoodDetails {
   final String foodClass;
   final double volume;
 
-  const Food({
+  const FoodDetails({
     required this.foodClass,
     required this.volume
   });
 
-  Food copy({
+  FoodDetails copy({
     String? foodClass,
     double? volume,
   }) =>
-      Food(
+      FoodDetails(
         foodClass: foodClass ?? this.foodClass,
         volume: volume ?? this.volume,
       );
@@ -21,7 +21,7 @@ class Food {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is Food &&
+          other is FoodDetails &&
               runtimeType == other.runtimeType &&
               foodClass == other.foodClass &&
               volume == other.volume;

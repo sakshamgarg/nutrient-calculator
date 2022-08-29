@@ -1,6 +1,5 @@
-import 'dart:ffi';
+
 import 'dart:io';
-import 'package:nutrient_calculator/updateInformation.dart';
 import 'package:flutter/material.dart';
 import 'package:nutrient_calculator/widget/scrollable_widget.dart';
 import 'package:nutrient_calculator/widget/text_dialog_widget.dart';
@@ -10,6 +9,8 @@ import 'package:nutrient_calculator/utils.dart';
 import 'package:tflite_flutter_helper/tflite_flutter_helper.dart';
 
 import 'displayCalories.dart';
+import 'package:nutrient_calculator/showResult.dart';
+
 
 class ConfirmClasses extends StatefulWidget {
   // const ConfirmClasses({Key? key}) : super(key: key);
@@ -39,21 +40,25 @@ final List<Image> myImages = [
 
 class _ConfirmClassesState extends State<ConfirmClasses> {
 
-  late List<Food> allFoods;
+  File? image;
+  Category? category;
+  late List<FoodDetails> allFoods;
   final columns = ['Food Class', 'Confidence Level'];
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    final foodResult = <Food>[
-      Food(foodClass: widget.category!.label, volume: widget.category!.score),
+    final foodResult = <FoodDetails>[
+      FoodDetails(foodClass: widget.category!.label, volume: widget.category!.score),
     ];
     widget.category != null ?
     this.allFoods = List.of(foodResult) : this.allFoods = List.of(exampleFood);
+    this.image = widget.foodImage;
+    this.category = widget.category;
   }
 
-  Future editFoodClass(Food editfood) async{
+  Future editFoodClass(FoodDetails editfood) async{
     final newfoodname = await showTextDialog(
         context,
         title: 'Change food class',
@@ -66,7 +71,7 @@ class _ConfirmClassesState extends State<ConfirmClasses> {
     }).toList());
   }
 
-  Future editVolume(Food editvol) async{
+  Future editVolume(FoodDetails editvol) async{
     final newvolume = await showTextDialog(
         context,
         title: 'Change food volume',
@@ -91,7 +96,7 @@ class _ConfirmClassesState extends State<ConfirmClasses> {
     }).toList();
   }
 
-  List<DataRow> getRows(List<Food> allFoods) => allFoods.map((Food food) {
+  List<DataRow> getRows(List<FoodDetails> allFoods) => allFoods.map((FoodDetails food) {
     final cells = [food.foodClass, food.volume];
 
     return DataRow(
@@ -243,10 +248,12 @@ class _ConfirmClassesState extends State<ConfirmClasses> {
                       // minimumSize: Size(190, 45),
                     ),
                     onPressed: () {
+                      print("SENDING LABEL");
+                      print(category!.label);
                       Navigator.push(context,
                           MaterialPageRoute(
                               builder: (context)=>
-                                  DisplayCalories(widget.foodImage, widget.category)));
+                                 new ShowResult(foodImage: image, foodName: category!.label,)));
                     }
                 ),
               ),

@@ -49,9 +49,9 @@ class _LoginPageState extends State<LoginPage> {
                       children: [
 
                         Padding(
-                          padding: const EdgeInsets.all(18.0),
+                          padding: const EdgeInsets.fromLTRB(20, 40, 20, 20),
                           child: Text(
-                            'Good Nutrition',
+                            'Nutrient calculator',
                             textAlign: TextAlign.left,
                             style: GoogleFonts.poppins(
                               textStyle: TextStyle(
@@ -65,7 +65,23 @@ class _LoginPageState extends State<LoginPage> {
                           ),
                         ),
                         Padding(
-                          padding: const EdgeInsets.only(top: 188.0),
+                          padding: const EdgeInsets.fromLTRB(10, 50, 10, 10),
+                          child: Text(
+                            "With your help, this app will find the nutritional content of your meals. Let's get started",
+                            textAlign: TextAlign.justify,
+                            style: GoogleFonts.poppins(
+                              textStyle: TextStyle(
+                                color: Color.fromRGBO(62, 66, 58, 1),
+                                fontSize: 16,
+                                height: 1,
+                                letterSpacing: 0,
+                                fontWeight: FontWeight.normal,
+                              ),
+                            ),
+                          ),
+                        ),
+                        Padding(
+                          padding: const EdgeInsets.only(top: 80.0),
                           child: Center(
                             child: ElevatedButton.icon(
                               label: Text(
@@ -85,7 +101,7 @@ class _LoginPageState extends State<LoginPage> {
                                 minimumSize: Size(190, 45),
                               ),
                               onPressed: () async {
-                                // await GoogleSignInProvider().googleLogin();
+                                await GoogleSignInProvider().googleLogin();
                                 // final provider =
                                 // Provider.of<GoogleSignInProvider>(context, listen: false);
                                 // provider.googleLogin();

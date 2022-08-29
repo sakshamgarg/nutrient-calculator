@@ -153,8 +153,8 @@ class _MyHomePageState extends State<MyHomePage> {
               child: Align(
                 alignment: Alignment.topLeft,
                 child: Text(
-                  'Search Food',
-                  textAlign: TextAlign.left,
+                  'Find Nutrients in food of your choice',
+                  textAlign: TextAlign.justify,
                   style: GoogleFonts.poppins(
                     textStyle: const TextStyle(
                       color: Color.fromRGBO(51, 51, 51, 1),
@@ -169,7 +169,7 @@ class _MyHomePageState extends State<MyHomePage> {
             ),
 
             Container(
-              padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+              padding: const EdgeInsets.fromLTRB(10, 10, 10, 5),
               child: TypeAheadField<FoodFromApi?>(
                 hideSuggestionsOnKeyboardHide: false,
                 debounceDuration: const Duration(milliseconds: 500),
@@ -181,7 +181,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.all(Radius.circular(20.0))
                       ),
-                      hintText: 'Search food item',
+                      hintText: 'Type the Name of the Food',
 
                     )
                 ),
@@ -209,6 +209,26 @@ class _MyHomePageState extends State<MyHomePage> {
                     Text('Selected food : ${food.name}')
                     ));
                 },
+              ),
+            ),
+
+            Padding(
+              padding: const EdgeInsets.fromLTRB(5, 5, 5, 5),
+              child: Align(
+                alignment: Alignment.center,
+                child: Text(
+                  'OR',
+                  textAlign: TextAlign.justify,
+                  style: GoogleFonts.poppins(
+                    textStyle: const TextStyle(
+                      color: Color.fromRGBO(51, 51, 51, 1),
+                      fontSize: 18,
+                      height: 1,
+                      letterSpacing: 0,
+                      fontWeight: FontWeight.normal,
+                    ),
+                  ),
+                ),
               ),
             ),
 
@@ -245,6 +265,26 @@ class _MyHomePageState extends State<MyHomePage> {
                       image: AssetImage('images/demoImage.png'),
                       fit: BoxFit.fitWidth
                   ),
+              ),
+            ),
+
+            Padding(
+              padding: const EdgeInsets.fromLTRB(10, 10, 10, 10),
+              child: Align(
+                alignment: Alignment.center,
+                child: Text(
+                  'Open Camera to find Nutrient',
+                  textAlign: TextAlign.justify,
+                  style: GoogleFonts.poppins(
+                    textStyle: const TextStyle(
+                      color: Color.fromRGBO(51, 51, 51, 1),
+                      fontSize: 14,
+                      height: 1,
+                      letterSpacing: 0,
+                      fontWeight: FontWeight.normal,
+                    ),
+                  ),
+                ),
               ),
             ),
 
