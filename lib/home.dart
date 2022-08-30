@@ -17,11 +17,18 @@ import 'package:tflite_flutter_helper/tflite_flutter_helper.dart';
 import 'package:nutrient_calculator/classifier.dart';
 import 'package:nutrient_calculator/classifier_quant.dart';
 import 'package:image/image.dart' as img;
+import 'package:http/http.dart' as http;
+
+import 'dart:convert';
+import 'dart:typed_data';
 
 import 'confirmClasses.dart';
+import 'package:nutrient_calculator/showResult.dart';
+import 'package:nutrient_calculator/facebook_Segment.dart';
+import 'package:nutrient_calculator/facebook_Classify.dart';
 
 class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
+  const MyHomePage({super.key});
 
   // This widget is the home page of your application. It is stateful, meaning
   // that it has a State object (defined below) that contains fields that affect
@@ -31,8 +38,6 @@ class MyHomePage extends StatefulWidget {
   // case the title) provided by the parent (in this case the App widget) and
   // used by the build method of the State. Fields in a Widget subclass are
   // always marked "final".
-
-  final String title;
 
   @override
   State<MyHomePage> createState() => _MyHomePageState();
@@ -49,6 +54,14 @@ class _MyHomePageState extends State<MyHomePage> {
   Image? _imageWidget;
   img.Image? fox;
   Category? category;
+  bool isCamera = true;
+  String foodFromType = "";
+
+  List<FacebookClassify>? facebookClassify;
+  List<FacebookSegment>? facebookSegment;
+
+  String? finalFood;
+  String? finalScore;
 
   final TextEditingController _typeAheadController = TextEditingController();
 
@@ -59,11 +72,67 @@ class _MyHomePageState extends State<MyHomePage> {
     _classifier = ClassifierQuant();
   }
 
+  Future<void> _predictFacebookSegment() async{
+
+    final imagebytes = await this.image!.readAsBytes();
+    final response = await http.
+    post(Uri.parse('https://api-inference.huggingface.co/models/facebook/detr-resnet-50'),
+        headers: {'Content-type': 'application/json', 'Authorization': 'Bearer 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'},
+        body: imagebytes);
+
+    if (response.statusCode == 200) {
+      // If the server did return a 200 OK response,
+      // then parse the JSON.
+      print("Facebook Segment");
+      final facebookSegment = facebookSegmentFromJson(response.body);
+      if (facebookSegment.isNotEmpty){
+        print(facebookSegment[0].label.toString());
+        print(facebookSegment[0].score.toStringAsFixed(3));
+      }
+      setState(() {
+        this.facebookSegment = facebookSegment;
+      });
+
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      throw Exception('Failed to load album');
+    }
+  }
+
+  Future<void> _predictFacebookClassify() async{
+
+    final imagebytes = await this.image!.readAsBytes();
+    final response = await http.
+    post(Uri.parse('https://api-inference.huggingface.co/models/facebook/deit-base-distilled-patch16-224'),
+        headers: {'Content-type': 'application/json', 'Authorization': 'Bearer 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'},
+        body: imagebytes);
+
+    if (response.statusCode == 200) {
+      // If the server did return a 200 OK response,
+      // then parse the JSON.
+      // return Album.fromJson(jsonDecode(response.body));
+      final facebookClassify = facebookClassifyFromJson(response.body);
+      print("Facebook Classify");
+      print(facebookClassify[0].label.toString());
+      print(facebookClassify[0].score.toStringAsFixed(3));
+      setState(() {
+        this.facebookClassify = facebookClassify;
+      });
+      // return Album.fromJson(json.decode(response.body));
+    } else {
+      // If the server did not return a 200 OK response,
+      // then throw an exception.
+      throw Exception('Failed to load album');
+    }
+  }
+
   void _predict() async{
     img.Image imageInput = img.decodeImage(this.image!.readAsBytesSync())!;
     var pred = _classifier.predict(imageInput);
     if (pred != null){
-      print("LABEL");
+
+      print("Tensorflow lite");
       print(pred!.label);
       print("CONFIDENCE");
       print(pred!.score.toStringAsFixed(3));
@@ -75,6 +144,27 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  void _compareScoreLabel() async {
+    if (this.facebookSegment == null && this.facebookClassify == null){
+      this.finalFood = "Burger";
+      this.finalScore = "1";
+    } else if (this.facebookSegment!.isEmpty){
+      print("INSIDE second IF");
+      this.finalFood = this.facebookClassify![0].label.toString();
+      this.finalScore = this.facebookClassify![0].score.toStringAsFixed(3);
+    } else {
+      var x = this.facebookClassify![0].score;
+      var y = this.facebookSegment![0].score;
+      if (x>=y){
+        this.finalFood = this.facebookClassify![0].label.toString();
+        this.finalScore = this.facebookClassify![0].score.toStringAsFixed(3);
+      } else {
+        this.finalFood = this.facebookSegment![0].label.toString();
+        this.finalScore = this.facebookSegment![0].score.toStringAsFixed(3);
+      }
+    }
+  }
+
   Future pickImage() async{
     try {
       final image = await ImagePicker().pickImage(source: ImageSource.gallery);
@@ -82,13 +172,20 @@ class _MyHomePageState extends State<MyHomePage> {
       if(image == null) return;
 
       final imageTemp = File(image.path);
+      print("PRINTING IMAGE");
+      print(image);
 
       setState(() {
         this.image = imageTemp;
         this._imageWidget = Image.file(this.image!);
-        _predict();
+        // _predict();
+        // _predictFacebookSegment();
+        // _predictFacebookClassify();
       }
       );
+      await _predictFacebookClassify();
+      await _predictFacebookSegment();
+      _compareScoreLabel();
     } on PlatformException catch(e){
       print('Failed to laod image: $e');
     }
@@ -105,9 +202,12 @@ class _MyHomePageState extends State<MyHomePage> {
       setState((){
         this.image = imagePermanent;
         this._imageWidget = Image.file(this.image!);
-        _predict();
+        // _predict();
       }
       );
+      await _predictFacebookSegment();
+      await _predictFacebookClassify();
+      _compareScoreLabel();
     } on PlatformException catch(e){
       print('Failed to laod image: $e');
     }
@@ -208,6 +308,8 @@ class _MyHomePageState extends State<MyHomePage> {
                     ..showSnackBar(SnackBar(content:
                     Text('Selected food : ${food.name}')
                     ));
+                  this.isCamera = false;
+                  this.foodFromType = food.name.toString();
                 },
               ),
             ),
@@ -306,6 +408,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                       onPressed: () {
                         pickImage();
+                        this.isCamera = true;
                       }
                     ),
                   ),
@@ -322,6 +425,7 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                       onPressed: () {
                         pickImageCamera();
+                        this.isCamera = true;
                       }
                     ),
                   ),
@@ -346,9 +450,13 @@ class _MyHomePageState extends State<MyHomePage> {
                   minimumSize: Size(190, 45),
                 ),
                 onPressed: () {
+                  this.isCamera ?
                   Navigator.push(context,
                       MaterialPageRoute(
-                          builder: (context)=> ConfirmClasses(image, category)));
+                          builder: (context)=> ConfirmClasses(image, finalFood, finalScore))) :
+                  Navigator.push(context,
+                      MaterialPageRoute(
+                          builder: (context)=> new ShowResult(foodImage: image, foodName: this.foodFromType,)));
                 }
             ),
             Padding(
@@ -356,7 +464,7 @@ class _MyHomePageState extends State<MyHomePage> {
               child: Align(
                 alignment: Alignment.center,
                 child: Text(
-                  category != null ? 'Category: ${category!.label}' : '',
+                  facebookClassify != null ? 'Category: ${finalFood}' : '',
                   textAlign: TextAlign.center,
                   style: GoogleFonts.poppins(
                     textStyle: const TextStyle(
@@ -375,8 +483,8 @@ class _MyHomePageState extends State<MyHomePage> {
               child: Align(
                 alignment: Alignment.center,
                 child: Text(
-                  category != null ?
-                  'Confidence: ${category!.score.toStringAsFixed(3)}' : '',
+                  facebookClassify != null ?
+                  'Confidence: ${finalScore}' : '',
                   textAlign: TextAlign.center,
                   style: GoogleFonts.poppins(
                     textStyle: const TextStyle(

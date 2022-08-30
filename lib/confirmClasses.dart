@@ -16,11 +16,15 @@ class ConfirmClasses extends StatefulWidget {
   // const ConfirmClasses({Key? key}) : super(key: key);
 
   File? foodImage;
-  Category? category;
+  // Category? category;
+  String? finalFood;
+  String? finalScore;
 
-  ConfirmClasses(File? image, Category? category, {super.key}){
+  ConfirmClasses(File? image, String? foodName, String? score, {super.key}){
     this.foodImage = image;
-    this.category = category;
+    // this.category = category;
+    this.finalFood = foodName;
+    this.finalScore = score;
   }
 
   @override
@@ -41,21 +45,25 @@ final List<Image> myImages = [
 class _ConfirmClassesState extends State<ConfirmClasses> {
 
   File? image;
-  Category? category;
+  // Category? category;
   late List<FoodDetails> allFoods;
   final columns = ['Food Class', 'Confidence Level'];
+  String? finalFoodName;
+  String? finalConfidenceScore;
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
     final foodResult = <FoodDetails>[
-      FoodDetails(foodClass: widget.category!.label, volume: widget.category!.score),
+      FoodDetails(foodClass: widget.finalFood!, volume: widget.finalScore!),
     ];
-    widget.category != null ?
+    widget.finalFood != "" ?
     this.allFoods = List.of(foodResult) : this.allFoods = List.of(exampleFood);
     this.image = widget.foodImage;
-    this.category = widget.category;
+    // this.category = widget.category;
+    this.finalFoodName = widget.finalFood;
+    this.finalConfidenceScore = widget.finalScore;
   }
 
   Future editFoodClass(FoodDetails editfood) async{
@@ -67,6 +75,7 @@ class _ConfirmClassesState extends State<ConfirmClasses> {
 
     setState(() => allFoods = allFoods.map((food) {
       final isEditFood = food == editfood;
+      finalFoodName = newfoodname;
       return isEditFood ? food.copy(foodClass: newfoodname) : food;
     }).toList());
   }
@@ -91,7 +100,7 @@ class _ConfirmClassesState extends State<ConfirmClasses> {
       final isVol = column == columns[1];
       return DataColumn(
           label: Text(column),
-          numeric: isVol,
+          // numeric: isVol,
       );
     }).toList();
   }
@@ -249,11 +258,11 @@ class _ConfirmClassesState extends State<ConfirmClasses> {
                     ),
                     onPressed: () {
                       print("SENDING LABEL");
-                      print(category!.label);
+                      print(finalFoodName);
                       Navigator.push(context,
                           MaterialPageRoute(
                               builder: (context)=>
-                                 new ShowResult(foodImage: image, foodName: category!.label,)));
+                                 new ShowResult(foodImage: image, foodName: finalFoodName!,)));
                     }
                 ),
               ),

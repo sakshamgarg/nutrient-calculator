@@ -2,7 +2,7 @@ import 'dart:ffi';
 
 class FoodDetails {
   final String foodClass;
-  final double volume;
+  final String volume;
 
   const FoodDetails({
     required this.foodClass,
@@ -11,7 +11,7 @@ class FoodDetails {
 
   FoodDetails copy({
     String? foodClass,
-    double? volume,
+    String? volume,
   }) =>
       FoodDetails(
         foodClass: foodClass ?? this.foodClass,

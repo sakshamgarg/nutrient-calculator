@@ -334,10 +334,11 @@ Future<FoodNutrients> fetchNutrients(var query) async {
     // return Album.fromJson(jsonDecode(response.body));
     return FoodNutrients.fromJson(json.decode(response.body));
     // return Album.fromJson(json.decode(response.body));
-  } else {
+  }
+  else {
     // If the server did not return a 200 OK response,
     // then throw an exception.
-    throw Exception('Failed to load album');
+    throw Exception('Failed to find given Food');
   }
 }
 
@@ -445,7 +446,10 @@ class _ShowResultState extends State<ShowResult> {
                                 )
                             );
                           } else if (snapshot.hasError){
-                            return Text('${snapshot.error}');
+                            print(snapshot.error);
+                            print("RETURNING ERROR");
+                            // return Text('${snapshot.error}');
+                            return Text('Cannot Find Appropriate Nutrients of the food');
                           }
                           return const CircularProgressIndicator();
                         }),
